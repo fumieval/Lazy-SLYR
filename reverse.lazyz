@@ -1,0 +1,4 @@
+-- main = \cons nil -> cons x (xs cons nil);
+main xs = xs append (\c n -> n);
+
+append x xs = \cons nil -> xs cons (cons x nil);

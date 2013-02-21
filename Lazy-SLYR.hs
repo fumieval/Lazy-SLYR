@@ -32,7 +32,7 @@ eval x = x
 encode :: BL.ByteString -> Expr
 encode = foldr cons empty . map church . BL.unpack where
     empty = K :$ I
-    cons x xs = S :$ (S :$ (K :$ S) :$ (S :$ (K :$ K) :$ (S :$ I :$ (K :$ x)))) :$ xs
+    cons x xs = (S :$ ((S :$ (K :$ ((S :$ (K :$ S)) :$ K))) :$ ((S :$ I) :$ (K :$ x)))) :$ xs
 
 church :: Word8 -> Expr
 church 0 = K :$ I
@@ -74,5 +74,5 @@ spaces = skipMany $ satisfy $ inClass "\n\r "
 main = do
     (path:_) <- getArgs
     Done _ prog <- parse parseExpr <$> BL.readFile path
-    input <- encode <$> BL.getContents
+    input <- encode <$> BL.pack <$> UTF8.encode <$> getContents
     BL.putStr $ decode $ eval $ prog :$ input
