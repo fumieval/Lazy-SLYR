@@ -1,0 +1,11 @@
+fibs = fix $ \self -> 1 : 1 : zipWith (+) self (tail self);
+
+zipWith f = fix $ \self xs' ys' -> xs' $ \x xs -> ys' $ \y ys -> f x y : self xs ys;
+
+showNumber' = fix $ \self n cons empty -> divMod10 n $ \q r -> ifnonzero q (self q cons) I $ cons (p48 + r) empty;
+
+show cons empty = fix $ \self xs' -> xs' $ \x xs -> showNumber' x cons (cons '\n' $ self xs);
+
+prim_list xs = xs (:) nil;
+
+main = const $ \c n -> show c n fibs;
