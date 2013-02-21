@@ -53,14 +53,14 @@ unchurch expr = case expr `apply` Inc `apply` Nat 0 of
 parseExpr :: Parser Expr
 parseExpr = spaces *> choice
     [ string (BS.pack $ UTF8.encode "イヤーッ！") *> ((:$) <$> parseExpr <*> parseExpr)
-    , string (BS.pack $ UTF8.encode "`") *> ((:$) <$> parseExpr <*> parseExpr)
+--    , string (BS.pack $ UTF8.encode "`") *> ((:$) <$> parseExpr <*> parseExpr)
     , U <$ string (BS.pack $ UTF8.encode "グワーッ！")
     , I <$ string (BS.pack $ UTF8.encode "アバーッ！")
     , F <$ string (BS.pack $ UTF8.encode "ゴウランガ！")
     , E <$ string (BS.pack $ UTF8.encode "サヨナラ！")
-    , K <$ string (BS.pack $ UTF8.encode "k")
-    , S <$ string (BS.pack $ UTF8.encode "s")
-    , I <$ string (BS.pack $ UTF8.encode "i")
+--    , K <$ string (BS.pack $ UTF8.encode "k")
+--    , S <$ string (BS.pack $ UTF8.encode "s")
+--    , I <$ string (BS.pack $ UTF8.encode "i")
     , string (BS.pack $ UTF8.encode "アイ") *> do { m <- length <$> many (string (BS.pack $ UTF8.encode "エ")) ;
                            n <- pred <$> length <$> some (string (BS.pack $ UTF8.encode "！")) ;
                            return $ church $ fromIntegral $ 10 * m + n }
