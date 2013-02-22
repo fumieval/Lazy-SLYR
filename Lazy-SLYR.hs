@@ -1,5 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 import Control.Applicative
 import Data.Word
 import System.Environment
@@ -10,10 +8,7 @@ import qualified Codec.Binary.UTF8.String as UTF8
 
 infixl 9 :$
 data Expr = Expr :$ Expr | I | K | S | U | F | E
-    | Inc | Nat !Word8
-    | Cons
-    | Nil
-    deriving Show
+    | Inc | Nat !Word8 | Cons | Nil deriving Show
 
 apply :: Expr -> Expr -> Expr
 apply (S :$ x :$ y) z = apply x z `apply` apply y z
@@ -53,21 +48,14 @@ unchurch expr = case expr `apply` Inc `apply` Nat 0 of
 parseExpr :: Parser Expr
 parseExpr = spaces *> choice
     [ string (BS.pack $ UTF8.encode "イヤーッ！") *> ((:$) <$> parseExpr <*> parseExpr)
---    , string (BS.pack $ UTF8.encode "`") *> ((:$) <$> parseExpr <*> parseExpr)
     , U <$ string (BS.pack $ UTF8.encode "グワーッ！")
     , I <$ string (BS.pack $ UTF8.encode "アバーッ！")
     , F <$ string (BS.pack $ UTF8.encode "ゴウランガ！")
     , E <$ string (BS.pack $ UTF8.encode "サヨナラ！")
---    , K <$ string (BS.pack $ UTF8.encode "k")
---    , S <$ string (BS.pack $ UTF8.encode "s")
---    , I <$ string (BS.pack $ UTF8.encode "i")
     , string (BS.pack $ UTF8.encode "アイ") *> do { m <- length <$> many (string (BS.pack $ UTF8.encode "エ")) ;
                            n <- pred <$> length <$> some (string (BS.pack $ UTF8.encode "！")) ;
                            return $ church $ fromIntegral $ 10 * m + n }
     ] <* spaces
-
-parseComment :: Parser ()
-parseComment = string (BS.pack $ UTF8.encode "ナンデ？") *> many (notWord8 10) *> word8 10 *> pure ()
 
 spaces = skipMany $ satisfy $ inClass "\n\r "
 
